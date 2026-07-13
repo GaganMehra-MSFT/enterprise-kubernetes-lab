@@ -119,7 +119,7 @@ Contents:
     Find the line : SystemdCgroup = false
     Change it to: SystemdCgroup = true
 
-  # Restart containerd:
+  #### Restart containerd:
 
     sudo systemctl restart containerd
     sudo systemctl enable containerd
