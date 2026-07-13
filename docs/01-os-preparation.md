@@ -126,7 +126,7 @@ Contents:
     
     Verify status: sudo systemctl status containerd
     
-- 03 kubeadm Installation
+# 03 - kubeadm Installation
 
 ### Install required packages
 
