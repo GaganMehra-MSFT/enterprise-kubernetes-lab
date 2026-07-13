@@ -92,13 +92,14 @@ Contents:
 
 # 02 - Container Runtime
 
-Run on all three Ubuntu machines:
+### Run on all three Ubuntu machines:
 
-sudo apt update
-sudo apt install -y containerd
+    sudo apt update
+    sudo apt install -y containerd
 
-Verify Installation of Containerd
-Command = containerd --version
+### Verify Installation of Containerd
+    
+    Command = containerd --version
 
 - 03 kubeadm Installation
 
