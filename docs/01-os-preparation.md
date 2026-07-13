@@ -105,6 +105,19 @@ Contents:
 
     Command = systemctl status containerd
     Expected : Active: active (running)
+
+### Configure Containerd
+
+    sudo mkdir -p /etc/containerd
+    sudo containerd config default | sudo tee /etc/containerd/config.toml
+    >> This will generate config.toml file
+
+    Now Edit that file
+
+    sudo nano /etc/containerd/config.toml
+    
+    Find the line : SystemdCgroup = false
+    Change it to: SystemdCgroup = true
     
 - 03 kubeadm Installation
 
