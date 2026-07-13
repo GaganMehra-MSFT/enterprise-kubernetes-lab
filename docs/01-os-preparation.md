@@ -132,7 +132,7 @@ Contents:
 
   Before installing kubeadm for k8s, I decided to securely download components from official kubernetes repository
   ### Run
-    **sudo apt install -y apt-transport-https ca-certificates curl gpg**
+    sudo apt install -y apt-transport-https ca-certificates curl gpg
 
 ## Phase 2
 
