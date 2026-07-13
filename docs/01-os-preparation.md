@@ -100,6 +100,7 @@ Contents:
 ### Verify Installation of Containerd
     
     Command = containerd --version
+    Expected Outcome = containerd github.com/containerd/containerd/v2 2.2.1
 
 - 03 kubeadm Installation
 
