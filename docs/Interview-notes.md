@@ -6,30 +6,30 @@ Q2 : How a Pod is born ?
 
 Answer: Suppose you run:
 
-# kubectl apply -f postgres.yaml
+kubectl apply -f postgres.yaml
 
 Here's what happens:
 
-# 1. You submit postgres.yaml
+1. You submit postgres.yaml
             │
             ▼
-# 2. API Server stores it in etcd
+2. API Server stores it in etcd
             │
             ▼
-# 3. Scheduler chooses Worker-1
+3. Scheduler chooses Worker-1
             │
             ▼
-# 4. kubelet on Worker-1 says:
+4. kubelet on Worker-1 says:
    "I need a PostgreSQL Pod."
             │
             ▼
-# 5. containerd starts creating the container
+5. containerd starts creating the container
             │
             ▼
-# 6. Linux provides:
+6. Linux provides:
       ✔ Namespace   (Isolation)
       ✔ cgroups     (CPU/RAM limits)
       ✔ OverlayFS   (Shared image)
             │
             ▼
-# 7. PostgreSQL starts running
+7. PostgreSQL starts running
