@@ -101,7 +101,11 @@ Contents:
     
     Command = containerd --version
     Expected Outcome = containerd github.com/containerd/containerd/v2 2.2.1
+### Verify Containerd Status
 
+    systemctl status containerd
+    Expected : Active: active (running)
+    
 - 03 kubeadm Installation
 
 ## Phase 2
