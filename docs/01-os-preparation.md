@@ -136,6 +136,9 @@ Contents:
 
   ### Verify
 
+    curl --version
+    gpg --version
+
   ### Why are running the apt-transport and ca-certificate command?
   The answer is:
     No, you're NOT installing your own Certificate Authority.
@@ -163,10 +166,13 @@ This is the one confusing me.
 It is NOT:
 
 ❌ Microsoft CA
+
 ❌ Enterprise PKI
+
 ❌ Active Directory Certificate Services
 
 It IS: 
+
 **A bundle of public trusted root certificates.**
 
 Examples:
