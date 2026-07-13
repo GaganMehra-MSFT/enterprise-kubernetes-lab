@@ -118,6 +118,13 @@ Contents:
     
     Find the line : SystemdCgroup = false
     Change it to: SystemdCgroup = true
+
+  # Restart containerd:
+
+    sudo systemctl restart containerd
+    sudo systemctl enable containerd
+    
+    Verify status: sudo systemctl status containerd
     
 - 03 kubeadm Installation
 
