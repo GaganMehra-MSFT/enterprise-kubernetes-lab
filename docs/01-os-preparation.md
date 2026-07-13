@@ -90,7 +90,13 @@ Contents:
 192.168.xxx.xxx worker-2
 ```
 
-- 02 Container Runtime
+# 02 - Container Runtime
+
+Run on all three Ubuntu machines:
+
+sudo apt update
+sudo apt install -y containerd
+
 - 03 kubeadm Installation
 
 ## Phase 2
