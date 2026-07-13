@@ -134,6 +134,50 @@ Contents:
   ### Run
     sudo apt install -y apt-transport-https ca-certificates curl gpg
 
+  ### Verify
+
+  ### Why are running the apt-transport and ca-certificate command?
+  The answer is:
+    No, you're NOT installing your own Certificate Authority.
+    You're installing the ability for Ubuntu to trust public Certificate Authorities.
+
+Let's look at each package.
+
+**1. apt-transport-https**
+🎯 Why?
+
+Allows apt to download packages over HTTPS instead of HTTP.
+
+Think:
+
+Windows Update
+        ↓
+Uses HTTPS
+
+Same idea.
+
+**2. ca-certificates**
+
+This is the one confusing me.
+
+It is NOT:
+
+❌ Microsoft CA
+❌ Enterprise PKI
+❌ Active Directory Certificate Services
+
+It IS: 
+**A bundle of public trusted root certificates.**
+
+Examples:
+
+DigiCert
+GlobalSign
+Let's Encrypt
+Sectigo
+
+Exactly like Windows Trusted Root Store.
+
 ## Phase 2
 
 - 04 Control Plane
