@@ -6,7 +6,7 @@ Q2 : How a Pod is born ?
 
 Answer: Suppose you run:
 
-kubectl apply -f postgres.yaml
+**kubectl apply -f postgres.yaml**
 
 Here's what happens:
 
@@ -32,4 +32,4 @@ Here's what happens:
       ✔ OverlayFS   (Shared image)
             │
             ▼
-7. PostgreSQL starts running
+8. PostgreSQL starts running
