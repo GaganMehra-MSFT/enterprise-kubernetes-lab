@@ -367,36 +367,6 @@ The node will become **Ready** after installing Calico in the next lab.
 
 ---
 
-# Interview Questions
-
-### Q1. What is kubeadm?
-
-kubeadm is a Kubernetes bootstrapping tool used to initialize a control plane and join worker nodes to a cluster.
-
----
-
-### Q2. Is kubeadm a Kubernetes component?
-
-No.
-
-It is an installation tool.
-
-Once the cluster has been created, Kubernetes is managed by components such as the API Server, kubelet and containerd.
-
----
-
-### Q3. What does kubeadm init do?
-
-It creates the Kubernetes control plane by configuring certificates, etcd, the API Server, Scheduler and Controller Manager.
-
----
-
-### Q4. Why is admin.conf important?
-
-It contains the credentials and cluster information required for kubectl to securely communicate with the Kubernetes API Server.
-
----
-
 # Key Takeaways
 
 - kubeadm is used to build a Kubernetes cluster.
