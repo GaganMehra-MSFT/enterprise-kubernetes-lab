@@ -1,0 +1,14 @@
+manifests/nginx/mongo-secret.yaml
+**/*secret*.yaml
+# Kubernetes Secrets (never commit real credentials)
+manifests/**/mongo-secret.yaml
+manifests/**/*secret*.yaml
+
+# VS Code
+.vscode/
+
+# macOS
+.DS_Store
+
+# Windows
+Thumbs.db
