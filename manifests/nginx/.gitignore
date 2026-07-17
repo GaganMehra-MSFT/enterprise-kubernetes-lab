@@ -1,9 +1,10 @@
 manifests/nginx/mongo-secret.yaml
+manifests/nginx/mongo-configmap.yaml
 **/*secret*.yaml
 # Kubernetes Secrets (never commit real credentials)
 manifests/**/mongo-secret.yaml
 manifests/**/*secret*.yaml
-
+manifests/**/*configmap*.yaml
 # VS Code
 .vscode/
 
