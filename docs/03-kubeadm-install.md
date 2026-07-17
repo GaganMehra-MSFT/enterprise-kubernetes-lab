@@ -1,83 +1,142 @@
-# Step 7 – Install containerd
+# 03 - Kubernetes Installation using kubeadm
 
-Run on all three nodes:
+## Objective
+
+Install the Kubernetes components, initialize the control plane and prepare the cluster for worker nodes to join.
+
+---
+
+# Prerequisites
+
+Complete the following labs before continuing:
+
+- 01 - Operating System Preparation
+- 02 - Container Runtime
+
+These steps ensure:
+
+- Ubuntu is prepared for Kubernetes.
+- Required Linux kernel modules are loaded.
+- Kubernetes networking settings are configured.
+- containerd is installed and configured.
+
+---
+
+# Enable Linux Kernel Features
+
+Run on all three nodes.
 
 ```bash
-sudo apt install -y containerd
+sudo modprobe overlay
+sudo modprobe br_netfilter
 ```
 
-Verify installation:
+Persist the modules after reboot.
 
 ```bash
-containerd --version
-systemctl status containerd
+sudo nano /etc/modules-load.d/k8s.conf
+```
+
+Add:
+
+```text
+overlay
+br_netfilter
+```
+
+### Why?
+
+- **overlay** enables OverlayFS used by container image layers.
+- **br_netfilter** allows bridged network traffic to be processed by Linux networking rules, which Kubernetes networking plugins such as Calico require.
+
+---
+
+# Cube Notes
+
+## What is modprobe?
+
+Think of the Linux kernel as Windows.
+
+Windows has drivers such as:
+
+- NTFS driver
+- USB driver
+- Printer driver
+- Wi-Fi driver
+
+Linux also has drivers, but they are called **kernel modules**.
+
+Running:
+
+```bash
+sudo modprobe overlay
+```
+
+tells Linux:
+
+> Load the OverlayFS kernel module into memory.
+
+Running:
+
+```bash
+sudo modprobe br_netfilter
+```
+
+tells Linux:
+
+> Load the bridge packet filtering module into memory.
+
+Nothing changes visually. These commands simply enable Linux capabilities required by Kubernetes.
+
+---
+
+# Configure Kubernetes Networking Settings
+
+Create:
+
+```bash
+sudo nano /etc/sysctl.d/k8s.conf
+```
+
+Add:
+
+```text
+net.bridge.bridge-nf-call-iptables = 1
+net.bridge.bridge-nf-call-ip6tables = 1
+net.ipv4.ip_forward = 1
+```
+
+Apply the configuration.
+
+```bash
+sudo sysctl --system
+```
+
+Verify.
+
+```bash
+sysctl net.ipv4.ip_forward
 ```
 
 Expected:
 
-```
-Active: active (running)
-```
-
-### Why?
-
-containerd is the Container Runtime Interface (CRI).
-
-Its responsibilities include:
-
-- Pulling container images
-- Creating containers
-- Starting and stopping containers
-
----
-
-# Step 8 – Configure containerd
-
-Generate the default configuration:
-
-```bash
-sudo mkdir -p /etc/containerd
-
-sudo containerd config default | sudo tee /etc/containerd/config.toml
-```
-
-Edit:
-
-```bash
-sudo nano /etc/containerd/config.toml
-```
-
-Change:
-
-```
-SystemdCgroup = false
-```
-
-to
-
-```
-SystemdCgroup = true
-```
-
-Restart and enable containerd:
-
-```bash
-sudo systemctl restart containerd
-
-sudo systemctl enable containerd
+```text
+net.ipv4.ip_forward = 1
 ```
 
 ### Why?
 
-Kubernetes manages resources using **systemd cgroups**.
-
-Setting `SystemdCgroup = true` ensures containerd and kubelet use the same cgroup driver, preventing resource management issues.
+| Setting | Purpose |
+|----------|---------|
+| net.bridge.bridge-nf-call-iptables | Allows Kubernetes firewall rules to inspect bridged traffic |
+| net.bridge.bridge-nf-call-ip6tables | Same for IPv6 traffic |
+| net.ipv4.ip_forward | Allows Linux to forward packets between Pods on different nodes |
 
 ---
 
-# Step 9 – Install Required HTTPS and Package Verification Tools
+# Install Required HTTPS and Package Verification Tools
 
-Run on all three nodes:
+Run on all three nodes.
 
 ```bash
 sudo apt install -y apt-transport-https ca-certificates curl gpg
@@ -86,31 +145,31 @@ sudo apt install -y apt-transport-https ca-certificates curl gpg
 ### Why?
 
 | Package | Purpose |
-|---------|----------|
+|----------|---------|
 | apt-transport-https | Allows APT to download packages over HTTPS |
 | ca-certificates | Trusts public Certificate Authorities |
-| curl | Downloads files from the internet |
-| gpg | Verifies package signatures |
+| curl | Downloads repository files |
+| gpg | Verifies repository signatures |
 
 ---
 
-# Step 10 – Add the Kubernetes Package Repository
+# Add the Kubernetes Repository
 
-Download the repository signing key:
+Download the Kubernetes signing key.
 
 ```bash
 curl -fsSL https://pkgs.k8s.io/core:/stable:/v1.34/deb/Release.key \
 | sudo gpg --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg
 ```
 
-Add the Kubernetes repository:
+Add the Kubernetes repository.
 
 ```bash
 echo 'deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v1.34/deb/ /' \
 | sudo tee /etc/apt/sources.list.d/kubernetes.list
 ```
 
-Verify:
+Verify.
 
 ```bash
 cat /etc/apt/sources.list.d/kubernetes.list
@@ -118,11 +177,11 @@ cat /etc/apt/sources.list.d/kubernetes.list
 
 Expected:
 
-```
+```text
 deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v1.34/deb/ /
 ```
 
-Refresh package information:
+Refresh package information.
 
 ```bash
 sudo apt update
@@ -130,53 +189,62 @@ sudo apt update
 
 ---
 
-# Step 11 – Install Kubernetes Components
+# Install Kubernetes Components
 
-Run on all three nodes:
+Run on all three nodes.
 
 ```bash
 sudo apt install -y kubelet kubeadm kubectl
 ```
 
-Prevent automatic upgrades:
+Prevent automatic upgrades.
 
 ```bash
 sudo apt-mark hold kubelet kubeadm kubectl
 ```
 
-Verify:
+---
+
+# Verify Installation
 
 ```bash
 kubeadm version
-
 kubelet --version
-
 kubectl version --client
 ```
 
 Installed version:
 
-```
+```text
 Kubernetes v1.34.9
 ```
 
-### What is kubeadm?
+---
 
-kubeadm is a Kubernetes **bootstrapping tool**.
+# What is kubeadm?
 
-It creates new Kubernetes clusters using `kubeadm init` and joins worker nodes using `kubeadm join`.
+kubeadm is a Kubernetes bootstrapping tool used to create and join Kubernetes clusters.
 
-After the cluster is created, kubeadm's work is complete.
+It is **not** a long-running Kubernetes component.
 
-The cluster is then managed by:
+Its responsibilities are:
+
+- Initialize the control plane using **kubeadm init**
+- Join worker nodes using **kubeadm join**
+
+Once the cluster is built, kubeadm's job is complete.
+
+The cluster is then maintained by Kubernetes components such as:
 
 - kube-apiserver
-- kubelet
-- kube-controller-manager
 - kube-scheduler
+- kube-controller-manager
+- kubelet
 - containerd
 
-### Analogy
+---
+
+# Analogy
 
 | SQL Server | Kubernetes |
 |------------|------------|
@@ -185,9 +253,9 @@ The cluster is then managed by:
 
 ---
 
-# Step 12 – Initialize the Kubernetes Control Plane
+# Initialize the Control Plane
 
-Run only on the control-plane node:
+Run only on **kubeadm-controlplane**.
 
 ```bash
 sudo kubeadm init \
@@ -195,35 +263,35 @@ sudo kubeadm init \
   --pod-network-cidr=192.168.0.0/16
 ```
 
-### Parameters
+### What do these parameters mean?
 
 **--apiserver-advertise-address**
 
-IP address that worker nodes use to communicate with the Kubernetes API Server.
+Specifies the IP address that worker nodes will use to communicate with the Kubernetes API Server.
 
 **--pod-network-cidr**
 
-The IP range assigned to Pods.
+Specifies the IP address range that will be assigned to Pods.
 
-This must match the CNI plugin (Calico).
+This CIDR must match the networking plugin (Calico) that will be installed later.
 
 ---
 
-### Issue Encountered
+# Troubleshooting
 
 The first initialization failed with:
 
-```
+```text
 /proc/sys/net/ipv4/ip_forward contents are not set to 1
 ```
 
-### Temporary Fix
+Temporary fix:
 
 ```bash
 sudo sysctl -w net.ipv4.ip_forward=1
 ```
 
-### Permanent Fix
+Permanent fix:
 
 ```bash
 echo 'net.ipv4.ip_forward = 1' | sudo tee /etc/sysctl.d/99-kubernetes.conf
@@ -231,19 +299,11 @@ echo 'net.ipv4.ip_forward = 1' | sudo tee /etc/sysctl.d/99-kubernetes.conf
 sudo sysctl --system
 ```
 
-After fixing IP forwarding, rerun:
-
-```bash
-sudo kubeadm init \
-  --apiserver-advertise-address=192.168.235.134 \
-  --pod-network-cidr=192.168.0.0/16
-```
-
-The initialization completed successfully.
+Rerun the same `kubeadm init` command after applying the fix.
 
 ---
 
-# Step 13 – Configure kubectl
+# Configure kubectl
 
 Run:
 
@@ -255,14 +315,92 @@ sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
 sudo chown $(id -u):$(id -g) $HOME/.kube/config
 ```
 
-### Why?
+---
 
-This configures `kubectl` to communicate securely with the Kubernetes API Server using the cluster administrator credentials.
+# Cube Notes
 
-Verify:
+When `kubeadm init` completes, it creates several Kubernetes configuration files.
+
+One of the most important is:
+
+```text
+/etc/kubernetes/admin.conf
+```
+
+Think of this file as your **Administrator Identity Card** for the Kubernetes cluster.
+
+It contains:
+
+- Cluster endpoint (API Server)
+- Client certificate
+- Client private key
+- Certificate Authority (CA)
+- Cluster name
+
+Without this file, `kubectl` would not know:
+
+- Which cluster to connect to
+- How to authenticate
+- Whether the API Server can be trusted
+
+Copying this file into your home directory allows `kubectl` to securely communicate with the Kubernetes API Server.
+
+---
+
+# Verification
+
+Verify the control plane.
 
 ```bash
 kubectl get nodes
 ```
 
-Initially the control-plane node may show **NotReady** until the Calico CNI plugin is installed.
+Initially, the control-plane node will show:
+
+```text
+NotReady
+```
+
+This is expected because the networking plugin has not yet been installed.
+
+The node will become **Ready** after installing Calico in the next lab.
+
+---
+
+# Interview Questions
+
+### Q1. What is kubeadm?
+
+kubeadm is a Kubernetes bootstrapping tool used to initialize a control plane and join worker nodes to a cluster.
+
+---
+
+### Q2. Is kubeadm a Kubernetes component?
+
+No.
+
+It is an installation tool.
+
+Once the cluster has been created, Kubernetes is managed by components such as the API Server, kubelet and containerd.
+
+---
+
+### Q3. What does kubeadm init do?
+
+It creates the Kubernetes control plane by configuring certificates, etcd, the API Server, Scheduler and Controller Manager.
+
+---
+
+### Q4. Why is admin.conf important?
+
+It contains the credentials and cluster information required for kubectl to securely communicate with the Kubernetes API Server.
+
+---
+
+# Key Takeaways
+
+- kubeadm is used to build a Kubernetes cluster.
+- kubeadm init creates the control plane.
+- kubeadm join adds worker nodes.
+- admin.conf allows kubectl to communicate securely with the cluster.
+- A CNI plugin such as Calico is required before the cluster becomes fully operational.
