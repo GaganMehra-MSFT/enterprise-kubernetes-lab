@@ -1,1 +1,28 @@
+apiVersion: v1
+kind: PersistentVolume
 
+metadata:
+  name: project1-pv
+
+spec:
+  capacity:
+    storage: 5Gi
+
+  accessModes:
+    - ReadWriteOnce
+
+  persistentVolumeReclaimPolicy: Retain
+
+  storageClassName: project1-hostpath
+
+  hostPath:
+    path: /opt/k8s-storage/project1
+
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+        - matchExpressions:
+            - key: kubernetes.io/hostname
+              operator: In
+              values:
+                - kubeadm-worker-1
