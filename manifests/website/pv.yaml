@@ -27,10 +27,26 @@ spec:
               values:
                 - kubeadm-worker-1
 ###
-hostPath = where the STORAGE physically lives
-nodeAffinity = this storage is only valid on Worker-1
+hostPath = where the STORAGE physically lives OR THINK OF IT AS : where the storage physically exists on the Kubernetes node's filesystem.
+nodeAffinity = this storage is only valid on Worker-1.
+
+Worker-1's disk
+       │
+       ▼
+/opt/k8s-storage/project1    ← Physical storage location
+       │
+       ▼
+PV                           ← Advertises that storage to Kubernetes
+       │
+       ▼
+PVC                          ← Requests that storage
+       │
+       ▼
+Pod                          ← Uses it
+
 accessModes tells Kubernetes how the storage is allowed to be mounted by nodes.
 **ReadWriteOnce means the volume can be mounted read-write by a "single node at a time".**
+
 | Access Mode                   | Meaning                          |
 | ----------------------------- | -------------------------------- |
 | `ReadWriteOnce` (**RWO**)     | Read/write from **one node**     |
