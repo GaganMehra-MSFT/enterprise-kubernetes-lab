@@ -1,1 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
 
+metadata:
+  name: website
+
+spec:
+  replicas: 1
+
+  selector:
+    matchLabels:
+      app: website
+
+  template:
+    metadata:
+      labels:
+        app: website
+
+    spec:
+      containers:
+        - name: nginx
+          image: nginx:latest
+
+          ports:
+            - containerPort: 80
+
+          volumeMounts:
+            # Existing ConfigMap
+            - name: website-volume
+              mountPath: /usr/share/nginx/html
+
+            # NEW - Persistent Storage
+            - name: website-storage
+              mountPath: /usr/share/nginx/html/storage
+
+      volumes:
+        # Existing ConfigMap volume
+        - name: website-volume
+          configMap:
+            name: website-content
+
+        # NEW - PVC volume
+        - name: website-storage
+          persistentVolumeClaim:
+            claimName: project1-pvc
