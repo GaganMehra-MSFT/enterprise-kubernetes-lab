@@ -1,1 +1,43 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
 
+metadata:
+  name: project1-pvc
+  namespace: project1-website
+
+spec:
+  accessModes:
+    - ReadWriteOnce
+
+  resources:
+    requests:
+      storage: 2Gi
+
+  storageClassName: project1-hostpath
+---
+
+# What are we saying?
+# PVC: project1-pvc
+
+"I need:
+2Gi storage
+ReadWriteOnce
+from project1-hostpath"
+#
+---
+Kubernetes will look for an available PV matching those requirements.
+
+Your PV says:
+
+PV advertisement:
+5Gi available
+RWO
+project1-hostpath
+
+Your PVC says:
+
+PVC request:
+2Gi needed
+RWO
+project1-hostpath
+---
