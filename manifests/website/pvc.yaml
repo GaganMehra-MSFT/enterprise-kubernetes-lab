@@ -41,3 +41,19 @@ PVC request:
 RWO
 project1-hostpath
 ---
+# Basically this is the flow happening - 
+
+Worker-1 storage
+/opt/k8s-storage/project1
+        ↓
+PV
+"I have 5Gi"
+        ↓
+PVC
+"I need 2Gi"
+        ↓
+WAITING FOR POD
+
+# that is why pvc status shows pending becoz, my YAML says - volumeBindingMode: WaitForFirstConsumer
+---
+
