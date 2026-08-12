@@ -26,3 +26,16 @@ spec:
               operator: In
               values:
                 - kubeadm-worker-1
+###
+hostPath = where the data physically lives
+nodeAffinity = this storage is only valid on Worker-1
+accessModes tells Kubernetes how the storage is allowed to be mounted by nodes.
+**ReadWriteOnce means the volume can be mounted read-write by a "single node at a time".**
+| Access Mode                   | Meaning                          |
+| ----------------------------- | -------------------------------- |
+| `ReadWriteOnce` (**RWO**)     | Read/write from **one node**     |
+| `ReadOnlyMany` (**ROX**)      | Read-only from **many nodes**    |
+| `ReadWriteMany` (**RWX**)     | Read/write from **many nodes**   |
+| `ReadWriteOncePod` (**RWOP**) | Read/write from **one Pod only** |
+
+###
