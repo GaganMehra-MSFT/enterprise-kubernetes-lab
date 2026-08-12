@@ -1,1 +1,17 @@
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
 
+metadata:
+  name: project1-hostpath
+
+provisioner: kubernetes.io/no-provisioner
+volumeBindingMode: WaitForFirstConsumer
+reclaimPolicy: Retain
+
+---
+# Before applying, understand the three important lines:
+
+# provisioner: kubernetes.io/no-provisioner = Kubernetes will not automatically create storage; we will manually create the PV.
+# WaitForFirstConsumer = don't bind storage until a Pod actually needs the PVC.
+# Retain = if the claim is deleted later, keep the underlying data.
+---
