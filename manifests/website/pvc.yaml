@@ -54,6 +54,6 @@ PVC
         ↓
 WAITING FOR POD
 
-# that is why pvc status shows pending becoz, my YAML says - volumeBindingMode: WaitForFirstConsumer
+# that is why pvc status shows pending becoz, my storageclass YAML says - volumeBindingMode: WaitForFirstConsumer
 ---
 
