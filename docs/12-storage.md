@@ -76,6 +76,7 @@ A PersistentVolume represents storage that is available to Kubernetes.
 Think:
 
 > **PV = "I have storage available."**
+>  **More precisely, the PV is like an advertisement of available storage.** 
 
 Example:
 
