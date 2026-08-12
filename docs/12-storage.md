@@ -76,7 +76,6 @@ A PersistentVolume represents storage that is available to Kubernetes.
 Think:
 
 > **PV = "I have storage available."**
->  **More precisely, the PV is like an advertisement of available storage.** 
 
 Example:
 
@@ -85,9 +84,18 @@ Example:
 on kubeadm-worker-1
 at /opt/k8s-storage/project1
 ```
-
+> [!IMPORTANT]
+> **PV = Advertisement**
+>
+> A PersistentVolume is like an **advertisement of available storage**:
+> **"I have storage available."**
 ---
-
+> [!IMPORTANT]
+> **PVC = Request**
+>
+> A PersistentVolumeClaim is like an **application responding to the storage advertisement with a request**:
+> **"I need storage."**
+---
 ## PersistentVolumeClaim (PVC)
 
 A PVC is a request for storage from an application.
