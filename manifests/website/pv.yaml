@@ -27,7 +27,7 @@ spec:
               values:
                 - kubeadm-worker-1
 ###
-hostPath = where the STORAGE physically lives OR THINK OF IT AS : where the storage physically exists on the Kubernetes node's filesystem.
+hostPath = where the STORAGE physically lives : OR THINK OF IT AS : where the storage physically exists on the Kubernetes node's filesystem.
 nodeAffinity = this storage is only valid on Worker-1.
 
 Worker-1's disk
