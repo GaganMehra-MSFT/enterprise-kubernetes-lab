@@ -24,6 +24,7 @@ spec:
           image: nginx:latest
           ports:
             - containerPort: 80
+ # This was added in the next lab where I want to apply PVC auto claims.
           volumeMounts:
             - name: data
               mountPath: /data
