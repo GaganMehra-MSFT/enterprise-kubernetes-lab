@@ -24,3 +24,19 @@ spec:
           image: nginx:latest
           ports:
             - containerPort: 80
+          volumeMounts:
+            - name: data
+              mountPath: /data
+  
+  volumeClaimTemplates:
+    - metadata:
+        name: data
+      spec:
+        accessModes:
+          - ReadWriteOnce
+
+        storageClassName: project1-hostpath
+
+        resources:
+          requests:
+            storage: 1Gi
